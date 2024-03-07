@@ -43,4 +43,18 @@ describe("ContractRouter", () => {
       expect(response.status).toBe(HTTP_CODE.PERMISSION_DENIED);
     });
   });
+
+  describe("GET /contracts", () => {
+    it("should return contracts for the profile user", async () => {
+      //NOTE: only getProfileById is mocked; the getConstractById is doing a real request by calling the database
+      const mockProfile = { id: 1, firstName: "John", lastName: "Doe" };
+
+      ProfileService.getProfileById.mockResolvedValue(mockProfile);
+
+      const response = await supertest(app).get("/contracts?profile_id=1");
+
+      expect(response.status).toBe(HTTP_CODE.OK);
+      expect(response.body.length).toBeGreaterThan(0);
+    });
+  });
 });
