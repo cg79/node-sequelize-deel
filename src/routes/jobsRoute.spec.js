@@ -33,4 +33,19 @@ describe("JobsRouter", () => {
       expect(response.body.length).toBeGreaterThan(0);
     });
   });
+
+  describe("POST /:job_id/pay", () => {
+    it("pay for a job", async () => {
+      //NOTE: only getProfileById is mocked; the getConstractById is doing a real request by calling the database
+      const mockProfile = { id: 1, firstName: "John", lastName: "Doe" };
+      ProfileService.getProfileById.mockResolvedValue(mockProfile);
+
+      const response = await supertest(app).post("/1/pay?profile_id=1").send({
+        amount: 1,
+      });
+
+      expect(response.status).toBe(HTTP_CODE.OK);
+      expect(response.body.length).toBeGreaterThan(0);
+    });
+  });
 });

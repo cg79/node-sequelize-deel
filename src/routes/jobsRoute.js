@@ -10,6 +10,7 @@ class JobsRouter {
   initializeRoutes() {
     this.router.use(getProfile);
     this.router.get("/unpaid", this.getUnpaidJobs.bind(this));
+    this.router.post("/:job_id/pay", this.payJob.bind(this));
   }
 
   async getUnpaidJobs(req, res, next) {
@@ -19,6 +20,15 @@ class JobsRouter {
 
       const response = await jobService.findUnpaidJobsByUserId(profileId);
       res.json(response);
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+
+  async payJob(req, res, next) {
+    try {
+      throw new Error("Not implemented");
     } catch (error) {
       console.log(error);
       next(error);
