@@ -1,10 +1,10 @@
-const ContractRepository = require("../repositories/contractRepository");
+const contractRepository = require("../repositories/contractRepository");
 const { HTTP_CODE } = require("../services/errorCodes");
 const CustomError = require("../errorHandler/customError");
 
 class ContractService {
   async getContractById(id) {
-    return await ContractRepository.getContractById(id);
+    return await contractRepository.getContractById(id);
   }
 
   async viewContract(contractId, profileId) {
@@ -22,6 +22,15 @@ class ContractService {
       );
     }
     return contract;
+  }
+
+  async getContracts(userId) {
+    try {
+      const contracts = await contractRepository.getContractsByUserId(userId);
+      return contracts;
+    } catch (error) {
+      throw new Error("Error fetching contracts: " + error.message);
+    }
   }
 }
 

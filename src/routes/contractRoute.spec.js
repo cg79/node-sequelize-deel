@@ -51,7 +51,7 @@ describe("ContractRouter", () => {
 
       ProfileService.getProfileById.mockResolvedValue(mockProfile);
 
-      const response = await supertest(app).get("/contracts?profile_id=1");
+      const response = await supertest(app).get("/?profile_id=1");
 
       expect(response.status).toBe(HTTP_CODE.OK);
       expect(response.body.length).toBeGreaterThan(0);
