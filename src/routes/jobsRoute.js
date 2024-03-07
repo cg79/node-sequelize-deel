@@ -21,16 +21,22 @@ class JobsRouter {
       const response = await jobService.findUnpaidJobsByUserId(profileId);
       res.json(response);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }
 
   async payJob(req, res, next) {
     try {
-      throw new Error("Not implemented");
+      debugger;
+      const {
+        profile,
+        body: { amount = 0 } = {},
+        params: { job_id: jobId },
+      } = req;
+
+      const response = await jobService.payJob(profile, jobId, amount);
+      res.json(response);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

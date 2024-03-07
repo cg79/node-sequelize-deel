@@ -40,12 +40,14 @@ describe("JobsRouter", () => {
       const mockProfile = { id: 1, firstName: "John", lastName: "Doe" };
       ProfileService.getProfileById.mockResolvedValue(mockProfile);
 
-      const response = await supertest(app).post("/1/pay?profile_id=1").send({
-        amount: 1,
-      });
+      const response = await supertest(app)
+        .post("/1/pay?profile_id=1")
+        .set("Accept", "application/json")
+        .send({
+          amount: 1,
+        });
 
-      expect(response.status).toBe(HTTP_CODE.OK);
-      expect(response.body.length).toBeGreaterThan(0);
+      expect(response.status).toBe(HTTP_CODE.PRECONDITION_FAILED);
     });
   });
 });

@@ -21,6 +21,10 @@ class JobRepository {
     });
     return unpaidJobs;
   }
+
+  async getJobById(jobId) {
+    return await Job.findByPk(jobId);
+  }
 }
 
 module.exports = new JobRepository();
