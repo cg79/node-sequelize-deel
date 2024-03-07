@@ -22,6 +22,7 @@ describe("ContractRouter", () => {
 
   describe("GET /:id", () => {
     it("should return contract data if user has permission", async () => {
+      //NOTE: only getProfileById is mocked; the getConstractById is doing a real request by calling the database
       const mockProfile = { id: 1, firstName: "John", lastName: "Doe" };
 
       ProfileService.getProfileById.mockResolvedValue(mockProfile);
@@ -33,11 +34,11 @@ describe("ContractRouter", () => {
     });
 
     it("should return error if user doesn't have permission", async () => {
-      const mockProfile = { id: 888, firstName: "John", lastName: "Doe" };
+      const mockProfile = { id: 2, firstName: "John", lastName: "Doe" };
 
       ProfileService.getProfileById.mockResolvedValue(mockProfile);
 
-      const response = await supertest(app).get("/1?profile_id=888");
+      const response = await supertest(app).get("/1?profile_id=2");
 
       expect(response.status).toBe(HTTP_CODE.PERMISSION_DENIED);
     });
