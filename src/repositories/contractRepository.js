@@ -1,5 +1,6 @@
 const { Contract } = require("../model");
 const Sequelize = require("sequelize");
+const { CONTRACT_STATUS } = require("./contractStatus");
 
 class ContractRepository {
   async getContractById(id) {
@@ -11,7 +12,7 @@ class ContractRepository {
       const contracts = await Contract.findAll({
         where: {
           [Sequelize.Op.or]: [{ ClientId: userId }, { ContractorId: userId }],
-          status: { [Sequelize.Op.not]: "terminated" },
+          status: { [Sequelize.Op.not]: CONTRACT_STATUS.TERMINATED },
         },
       });
       return contracts;

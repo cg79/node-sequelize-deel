@@ -1,5 +1,6 @@
 const express = require("express");
 const { getProfile } = require("../middleware/getProfile");
+const jobService = require("../services/jobService");
 class JobsRouter {
   constructor() {
     this.router = express.Router();
@@ -15,7 +16,8 @@ class JobsRouter {
     try {
       debugger;
       const { id: profileId } = req.profile;
-      // add the function to get unpaid jobs
+
+      const response = await jobService.findUnpaidJobsByUserId(profileId);
       res.json(response);
     } catch (error) {
       console.log(error);
