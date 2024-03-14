@@ -2,11 +2,11 @@ const { Profile } = require("../model");
 
 class ProfileRepository {
   async getProfileById(id) {
-    return await Profile.findByPk(id);
+    return Profile.findByPk(id);
   }
 
   async updateProfileBalance(profile, balance, transaction) {
-    return await profile.update({ balance }, { transaction });
+    return profile.update({ balance }, { transaction });
   }
 }
 

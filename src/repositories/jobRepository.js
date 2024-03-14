@@ -4,8 +4,7 @@ const { CONTRACT_STATUS } = require("./contractStatus");
 
 class JobRepository {
   async findUnpaidJobsByUserId(userId) {
-    debugger;
-    const unpaidJobs = await Job.findAll({
+    return Job.findAll({
       include: [
         {
           model: Contract,
@@ -19,11 +18,10 @@ class JobRepository {
         paid: null,
       },
     });
-    return unpaidJobs;
   }
 
   async getJobById(jobId) {
-    return await Job.findByPk(jobId);
+    return Job.findByPk(jobId);
   }
 }
 

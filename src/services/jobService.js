@@ -13,7 +13,6 @@ class JobService {
   }
 
   async payJob(contractorProfile, jobId, amount) {
-    debugger;
     let transaction;
 
     if (contractorProfile.balance < amount) {
@@ -27,6 +26,10 @@ class JobService {
       const job = await jobRepository.getJobById(jobId, { transaction });
       if (!job) {
         throw new Error("Job not found");
+      }
+
+      if (job.paid) {
+        throw new Error("Job already paid");
       }
 
       const contract = await contractRepository.getContractById(job.ContractId);
