@@ -24,7 +24,11 @@ class AdminRouter {
       const endDate = Date.parse(end);
       // const userId = req.params.userId;
 
-      const response = await adminService.bestProfession(startDate, endDate);
+      const response = await adminService.bestProfession(
+        profile,
+        startDate,
+        endDate
+      );
       res.json(response);
     } catch (error) {
       console.log(error);
@@ -34,12 +38,16 @@ class AdminRouter {
 
   async bestClients(req, res, next) {
     try {
-      debugger;
       const { profile } = req;
-      const { amount } = req.body;
-      // const userId = req.params.userId;
+      const { start, end } = req.query;
+      const startDate = Date.parse(start);
+      const endDate = Date.parse(end);
 
-      const response = await balanceService.depositMoney(profile, amount);
+      const response = await adminService.getClientsWithHighestPayments(
+        profile,
+        startDate,
+        endDate
+      );
       res.json(response);
     } catch (error) {
       console.log(error);
