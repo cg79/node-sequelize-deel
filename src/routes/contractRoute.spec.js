@@ -1,6 +1,4 @@
-const express = require("express");
-
-const ContractRouter = require("./contractRoute");
+const app = require("../app");
 const ProfileService = require("../services/profileService");
 const { HTTP_CODE } = require("../services/errorCodes");
 
@@ -9,12 +7,12 @@ jest.mock("../services/profileService");
 const supertest = require("supertest");
 
 describe("ContractRouter", () => {
-  let app;
+  // let app;
 
-  beforeEach(() => {
-    app = express();
-    app.use("/", ContractRouter.getRouter());
-  });
+  // beforeEach(() => {
+  //   app = express();
+  //   app.use("/", ContractRouter.getRouter());
+  // });
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -46,7 +44,6 @@ describe("ContractRouter", () => {
 
   describe("GET /contracts", () => {
     it("should return contracts for the profile user", async () => {
-      //NOTE: only getProfileById is mocked; the getConstractById is doing a real request by calling the database
       const mockProfile = { id: 1, firstName: "John", lastName: "Doe" };
 
       ProfileService.getProfileById.mockResolvedValue(mockProfile);
