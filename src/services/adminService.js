@@ -1,97 +1,62 @@
 const profileRepository = require("../repositories/profileRepository");
 const jobRepository = require("../repositories/jobRepository");
+const { sequelize, Profile, Contract, Job } = require("../model");
 
 class AdminService {
-  async bestProfession(clientProfile, startTime, endTime) {
+  async bestProfession(startTime, endTime) {
     try {
-      // Query to find the profession that earned the most money within the specified time range
-      const result = await Profile.findAll({
-        include: [
-          {
-            model: Contract,
-            include: [
-              {
-                model: Job,
-                where: {
-                  paymentDate: {
-                    $between: [startTime, endTime], // Filter by payment date within the specified range
-                  },
-                  paid: true, // Only consider paid jobs
-                },
-                attributes: [
-                  [
-                    sequelize.fn("sum", sequelize.col("price")),
-                    "totalEarnings",
-                  ],
-                ], // Calculate total earnings for each profession
-              },
-            ],
-          },
-        ],
-        attributes: ["profession"],
-        group: ["Profile.profession"],
-        order: [[sequelize.literal("totalEarnings"), "DESC"]], // Order by total earnings in descending order
-        limit: 1, // Limit the result to one row
-      });
+      debugger;
+      const result = await sequelize.query(
+        `
+        SELECT p.profession, SUM(j.balance) AS totalEarned
+        FROM Profiles p
+        INNER JOIN Contracts c ON p.id = c.ContractorId
+        INNER JOIN Jobs j ON c.id = j.ContractId
+        WHERE p.type = 'contractor' AND j.paymentDate BETWEEN :startTime AND :endTime
+        GROUP BY p.profession
+        ORDER BY totalEarned DESC
+        LIMIT 1;
+      `,
+        {
+          replacements: { startTime, endTime },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      );
 
-      // Extract and return the most profitable profession
       if (result.length > 0) {
         return result[0].profession;
       } else {
-        return "No jobs found within the specified time range.";
+        return null; // No results found
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error finding most profitable profession:", error);
       throw error;
     }
   }
 
   async getClientsWithHighestPayments(startTime, endTime, limit = 2) {
-    try {
-      // Query to find the clients who paid the most for jobs within the specified time period
-      const result = await Profile.findAll({
-        include: [
-          {
-            model: Contract,
-            include: [
-              {
-                model: Job,
-                where: {
-                  paymentDate: {
-                    $between: [startTime, endTime], // Filter by payment date within the specified range
-                  },
-                  paid: true, // Only consider paid jobs
-                },
-                attributes: [],
-                required: true, // Ensure that the job exists
-              },
-            ],
-            attributes: [],
-            required: true, // Ensure that the contract exists
-          },
-        ],
-        attributes: [
-          "id",
-          "firstName",
-          "lastName",
-          [sequelize.literal('SUM("Contract.Jobs.price")'), "totalPayment"],
-        ],
-        group: ["Profile.id"],
-        order: [[sequelize.literal("totalPayment"), "DESC"]], // Order by total payment in descending order
-        limit, // Limit the result to the specified number of clients
-      });
+    const result = await sequelize.query(
+      `
+    SELECT p.firstName, p.lastName, SUM(j.price) AS totalPaid
+    FROM Profiles p
+    INNER JOIN Contracts c ON p.id = c.ClientId
+    INNER JOIN Jobs j ON c.id = j.ContractId
+    WHERE p.type = 'client' AND j.paymentDate BETWEEN :startTime AND :endTime
+    GROUP BY p.id
+    ORDER BY totalPaid DESC
+    LIMIT :limit;
+  `,
+      {
+        replacements: { startTime, endTime, limit },
+        type: sequelize.QueryTypes.SELECT,
+      }
+    );
 
-      // Extract and return the required client information
-      return result.map((client) => ({
-        id: client.id,
-        firstName: client.firstName,
-        lastName: client.lastName,
-        totalPayment: client.totalPayment,
-      }));
-    } catch (error) {
-      console.error("Error:", error);
-      throw error;
-    }
+    return result.map((client) => ({
+      firstName: client.firstName,
+      lastName: client.lastName,
+      totalPaid: client.totalPaid,
+    }));
   }
 }
 

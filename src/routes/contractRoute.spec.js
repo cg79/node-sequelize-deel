@@ -7,13 +7,6 @@ jest.mock("../services/profileService");
 const supertest = require("supertest");
 
 describe("ContractRouter", () => {
-  // let app;
-
-  // beforeEach(() => {
-  //   app = express();
-  //   app.use("/", ContractRouter.getRouter());
-  // });
-
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -25,7 +18,7 @@ describe("ContractRouter", () => {
 
       ProfileService.getProfileById.mockResolvedValue(mockProfile);
 
-      const response = await supertest(app).get("/1?profile_id=1");
+      const response = await supertest(app).get("/contracts/1?profile_id=1");
 
       expect(response.status).toBe(HTTP_CODE.OK);
       expect(response.body.id).toBeGreaterThan(0);
@@ -36,7 +29,7 @@ describe("ContractRouter", () => {
 
       ProfileService.getProfileById.mockResolvedValue(mockProfile);
 
-      const response = await supertest(app).get("/1?profile_id=2");
+      const response = await supertest(app).get("/contracts/1?profile_id=2");
 
       expect(response.status).toBe(HTTP_CODE.PERMISSION_DENIED);
     });
@@ -48,7 +41,7 @@ describe("ContractRouter", () => {
 
       ProfileService.getProfileById.mockResolvedValue(mockProfile);
 
-      const response = await supertest(app).get("/?profile_id=1");
+      const response = await supertest(app).get("/contracts/?profile_id=1");
 
       expect(response.status).toBe(HTTP_CODE.OK);
       expect(response.body.length).toBeGreaterThan(0);

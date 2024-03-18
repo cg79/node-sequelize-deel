@@ -11,7 +11,7 @@ class BalancesRouter {
 
   initializeRoutes() {
     this.router.use(getProfile);
-    this.router.get("/deposit/:userId", balancesController.depositMoney);
+    this.router.post("/deposit/:userId", balancesController.depositMoney);
   }
 
   getRouter() {

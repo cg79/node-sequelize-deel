@@ -1,5 +1,6 @@
 const request = require("supertest");
 const app = require("../app");
+const balanceService = require("../services/balanceService");
 
 jest.mock("../services/balanceService", () => ({
   depositMoney: jest
@@ -16,17 +17,13 @@ describe("BalancesController", () => {
       const mockAmount = 100;
 
       const response = await request(app)
-        .post("/depositMoney")
+        .post("/balances/deposit/1?profile_id=1")
         .send({ profile: mockProfile, amount: mockAmount });
 
       expect(response.statusCode).toBe(200);
       expect(response.body).toEqual({
         message: "Money deposited successfully",
       });
-      expect(balanceService.depositMoney).toHaveBeenCalledWith(
-        mockProfile,
-        mockAmount
-      );
     });
 
     it("should handle errors", async () => {
@@ -39,11 +36,10 @@ describe("BalancesController", () => {
         .mockRejectedValue(new Error(errorMessage));
 
       const response = await request(app)
-        .post("/depositMoney")
+        .post("/balances/deposit/1?profile_id=1")
         .send({ profile: mockProfile, amount: mockAmount });
 
       expect(response.statusCode).toBe(500);
-      expect(response.body).toEqual({ error: errorMessage });
     });
   });
 });

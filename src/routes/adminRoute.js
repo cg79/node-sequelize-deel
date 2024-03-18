@@ -10,8 +10,8 @@ class AdminRouter {
 
   initializeRoutes() {
     this.router.use(getProfile);
-    this.router.get("/best-profession", adminController.depositMoney);
-    this.router.get("/best-clients", adminController.depositMoney);
+    this.router.get("/best-profession", adminController.bestProfession);
+    this.router.get("/best-clients", adminController.bestClients);
   }
 
   getRouter() {

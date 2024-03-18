@@ -1,4 +1,4 @@
-const { Profile } = require("../model");
+const { Profile, Contract, Job } = require("../model");
 
 class ProfileRepository {
   async getProfileById(id) {
